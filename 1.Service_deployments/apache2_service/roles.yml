@@ -1,0 +1,7 @@
+---
+- name: Installation of apache2 service
+  hosts: localhost
+  become: yes
+  roles:
+    - apache2
+  ...
