@@ -1,0 +1,86 @@
+---
+# tasks/main.yml
+
+- name: Ensure apt cache is up to date
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install required packages (Java, wget, tar)
+  apt:
+    name:
+      - "{{ java_package }}"
+      - wget
+      - tar
+    state: present
+
+- name: Ensure tomcat group exists
+  group:
+    name: "{{ tomcat_group }}"
+    state: present
+
+- name: Ensure tomcat user exists
+  user:
+    name: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    home: "{{ install_dir }}"
+    shell: /usr/sbin/nologin
+    system: yes
+    create_home: no
+
+- name: Create install directory
+  file:
+    path: "{{ install_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download Tomcat archive
+  get_url:
+    url: "{{ tomcat_download_url }}"
+    dest: "{{ tomcat_archive_path }}"
+    mode: '0644'
+
+- name: Extract Tomcat archive
+  unarchive:
+    src: "{{ tomcat_archive_path }}"
+    dest: "{{ install_dir }}"
+    remote_src: yes
+    creates: "{{ install_dir }}/apache-tomcat-{{ tomcat_version }}"
+
+- name: Ensure 'latest' symlink points to extracted Tomcat
+  file:
+    src: "{{ install_dir }}/apache-tomcat-{{ tomcat_version }}"
+    dest: "{{ install_dir }}/latest"
+    state: link
+    force: yes
+
+- name: Set ownership of Tomcat directory
+  file:
+    path: "{{ install_dir }}/apache-tomcat-{{ tomcat_version }}"
+    state: directory
+    recurse: yes
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+
+- name: Ensure startup/shutdown scripts are executable
+  file:
+    path: "{{ install_dir }}/latest/bin"
+    recurse: yes
+    mode: "0755"
+
+- name: Deploy Tomcat systemd service
+  template:
+    src: tomcat.service.j2
+    dest: /etc/systemd/system/tomcat.service
+  notify:
+    - systemd daemon-reload
+    - restart tomcat
+
+- name: Ensure Tomcat service is enabled and started
+  systemd:
+    name: tomcat
+    enabled: yes
+    state: started
+...
