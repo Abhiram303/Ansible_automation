@@ -1,0 +1,8 @@
+```yaml
+---
+- name: Install Apache Tomcat using Role
+  hosts: webservers
+  become: yes
+  roles:
+    - tomcat_install
+...
