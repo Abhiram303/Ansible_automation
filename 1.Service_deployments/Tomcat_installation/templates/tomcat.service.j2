@@ -1,0 +1,23 @@
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+Environment=JAVA_HOME={{ java_home }}
+Environment=CATALINA_PID={{ install_dir }}/latest/temp/tomcat.pid
+Environment=CATALINA_HOME={{ install_dir }}/latest
+Environment=CATALINA_BASE={{ install_dir }}/latest
+
+ExecStart={{ install_dir }}/latest/bin/startup.sh
+ExecStop={{ install_dir }}/latest/bin/shutdown.sh
+
+User={{ tomcat_user }}
+Group={{ tomcat_group }}
+UMask=0007
+RestartSec=10
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
