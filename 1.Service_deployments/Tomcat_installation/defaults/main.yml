@@ -1,0 +1,12 @@
+---
+tomcat_version: "9.0.73"
+tomcat_major: "9"
+tomcat_user: tomcat
+tomcat_group: tomcat
+install_dir: /opt/tomcat
+tomcat_archive: "apache-tomcat-{{ tomcat_version }}.tar.gz"
+tomcat_archive_path: "/tmp/{{ tomcat_archive }}"
+tomcat_download_url: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_major }}/v{{ tomcat_version }}/bin/{{ tomcat_archive }}"
+java_package: openjdk-11-jdk
+java_home: /usr/lib/jvm/java-11-openjdk-amd64
+...
