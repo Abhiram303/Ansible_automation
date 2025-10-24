@@ -1,4 +1,3 @@
-```yaml
 ---
 - name: Install Apache Tomcat using Role
   hosts: webservers
