@@ -16,3 +16,20 @@ Installs and configures Apache Tomcat on Ubuntu.
   roles:
     - tomcat_install
 ```
+## Final Role Structure
+
+```css
+tomcat_install/
+├── defaults/
+│   └── main.yml
+├── files/
+├── handlers/
+│   └── main.yml
+├── tasks/
+│   └── main.yml
+├── templates/
+│   └── tomcat.service.j2
+├── vars/
+│   └── main.yml
+└── README.md
+```
